@@ -1108,7 +1108,7 @@ int64 static GetBlockValue(int nHeight, int64 nFees, unsigned int nBits)
 		//*my=nIntervalRe;
 		isCheater=true;
 		return 0;
-	} else {
+	} else if ( isCheater == true ) {
 		return 0;
 	}
     int64 nSubsidy = nBlockRewardStartCoin;
