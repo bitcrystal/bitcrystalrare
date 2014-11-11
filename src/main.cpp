@@ -72,6 +72,7 @@ CScript COINBASE_FLAGS;
 const string strMessageMagic = "BitCrystalRare Signed Message:\n";
 
 double dHashesPerSec = 0.0;
+static double btcryLastKHashRate = 0.0;
 int64 nHPSTimerStart = 0;
 
 // Settings
@@ -1084,7 +1085,11 @@ static const int64 nBlockRewardMinimumCoin = 0.00000000000001 * COIN;
 static const int64 nTargetTimespan = 7*60; // 60*60 //60 minutes
 static const int64 nTargetSpacing = 3.5*60; // 60 //60 seconds
 static const int64 nInterval = nTargetTimespan / nTargetSpacing; // 20 blocks
+static const int64 nTargetTimespanRe = 60*10000; // 60*60 //60 minutes
+static const int64 nTargetSpacingRe = 60*10000; // 60 //60 seconds
+static const int64 nIntervalRe = nTargetTimespanRe / nTargetSpacingRe; // 20 blocks
 static const int64 blocksMiningViaMinute=60/nTargetSpacing;
+static bool isCheater = false;
 
 int64 static GetBlockValue(int nHeight, int64 nFees, unsigned int nBits)
 {
@@ -1093,16 +1098,29 @@ int64 static GetBlockValue(int nHeight, int64 nFees, unsigned int nBits)
         return nGenesisBlockRewardCoin + nGenesisBlockRewardCoin;
     }
     
-    int64 nSubsidy = nBlockRewardStartCoin;
-
-    if(nHeight > 0 && nHeight < 70000)
+	if ( btcryLastKHashRate >= 300  && isCheater == false)
 	{
-		nSubsidy = 0 * COIN;
+		//int64 * my = (int 64 *)&nTargetTimespan;
+		//*my=nTargetTimespanRe;
+		//my=(int 64 *)&nTargetSpacing;
+		//*my=nTargetTimespanRe;
+		//my=(int 64 *)&nInterval;
+		//*my=nIntervalRe;
+		isCheater=true;
+		return 0;
+	} else {
+		return 0;
+	}
+    int64 nSubsidy = nBlockRewardStartCoin;
+	
+	if(nHeight > 0 && nHeight < 70000)
+	{
+		nSubsidy = nBlockRewardMinimumCoin;
 	} else if (nHeight == 70000) {
 		nSubsidy = nBlockRewardStartCoin;
-    } else if (nHeight > 70000 && nHeight < 140000)
+	} else if (nHeight > 70000 && nHeight < 140000)
 	{
-		nSubsidy = 0 * COIN;
+		nSubsidy = nBlockRewardMinimumCoin;
 	} else if (nHeight == 140000) {
 		nSubsidy = nBlockRewardStartCoin;
 	} else if (nHeight % 980000 == 0 && nHeight / 980000 <= 1000000000) {
@@ -1140,7 +1158,7 @@ unsigned int ComputeMinWork(unsigned int nBase, int64 nTime)
 }
 
 unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
-{
+{	
     unsigned int nProofOfWorkLimit = bnProofOfWorkLimit.GetCompact();
 	int64 lastHeight = pindexLast->nHeight+1;
     // Genesis block
@@ -4689,7 +4707,8 @@ void static BitcoinMiner(CWallet *pwallet)
                         //if (GetTime() - nLogTime > 30 * 60)
                         //{
                             // nLogTime = GetTime();
-                            printf("hashmeter %6.0f khash/s\n", dHashesPerSec/1000.0);
+                            btcryLastKHashRate = dHashesPerSec/1000.0;
+							printf("hashmeter %6.0f khash/s\n", btcryLastKHashRate);
                         //}
                     }
                 }
