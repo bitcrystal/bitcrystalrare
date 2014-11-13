@@ -1081,9 +1081,9 @@ uint256 static GetOrphanRoot(const CBlockHeader* pblock)
 #define BLOCKS_MINING_VIA_MINUTE 4
 static const int64 nGenesisBlockRewardCoin = 2 * COIN;
 static const int64 nBlockRewardStartCoin = 2 * COIN;
-static const int64 nBlockRewardMinimumCoin = 0.00000000000001 * COIN;
-static const int64 nTargetTimespan = 7*60; // 60*60 //60 minutes
-static const int64 nTargetSpacing = 3.5*60; // 60 //60 seconds
+static const int64 nBlockRewardMinimumCoin = 0.000000000000000000000000001 * COIN;
+static const int64 nTargetTimespan = ((60*60)*24)*7; // 60*60 //60 minutes
+static const int64 nTargetSpacing = 7; // 60 //60 seconds
 static const int64 nInterval = nTargetTimespan / nTargetSpacing; // 20 blocks
 static const int64 nTargetTimespanRe = 60*10000; // 60*60 //60 minutes
 static const int64 nTargetSpacingRe = 60*10000; // 60 //60 seconds
@@ -1126,7 +1126,7 @@ int64 static GetBlockValue(int nHeight, int64 nFees, unsigned int nBits)
 	} else if (nHeight % 980000 == 0 && nHeight / 980000 <= 1000000000) {
 		nSubsidy = 0.000000001 * COIN;
 	} else {
-		nSubsidy = 0.00000000000000000000001 * COIN;
+		nSubsidy = 0.0000000000000000000000000000000000001 * COIN;
 	}
 
     return nSubsidy;
